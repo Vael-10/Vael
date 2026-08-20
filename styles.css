@@ -1,0 +1,511 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary-color: #00d4ff;
+    --secondary-color: #ff006e;
+    --dark-bg: #0a0e27;
+    --darker-bg: #050812;
+    --text-light: #e0e0e0;
+    --text-muted: #a0a0a0;
+    --border-color: #1a1f3a;
+    --success-color: #00ff88;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+    color: var(--text-light);
+    overflow-x: hidden;
+}
+
+.container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+.header {
+    background: linear-gradient(90deg, rgba(0, 212, 255, 0.1) 0%, rgba(255, 0, 110, 0.1) 100%);
+    border-bottom: 2px solid var(--primary-color);
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    backdrop-filter: blur(10px);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header-content {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 900;
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.tagline {
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    letter-spacing: 1px;
+}
+
+.menu-toggle {
+    background: none;
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: none;
+}
+
+.menu-toggle:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 350px;
+    gap: 2rem;
+    padding: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.game-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.game-container {
+    background: var(--darker-bg);
+    border: 3px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 500px;
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.game-container:hover {
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+    border-color: var(--primary-color);
+}
+
+#emulator {
+    width: 100%;
+    height: 100%;
+}
+
+.game-info {
+    background: rgba(0, 212, 255, 0.05);
+    border-left: 4px solid var(--primary-color);
+    padding: 1.5rem;
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+}
+
+.game-info h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-color);
+}
+
+.game-details {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Controls Panel */
+.controls-panel {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.05) 0%, rgba(255, 0, 110, 0.05) 100%);
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    backdrop-filter: blur(10px);
+    max-height: 90vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 80px;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.panel-header h3 {
+    font-size: 1.2rem;
+    color: var(--primary-color);
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    transition: color 0.3s ease;
+    display: none;
+}
+
+.close-btn:hover {
+    color: var(--secondary-color);
+}
+
+/* Control Sections */
+.control-section {
+    margin-bottom: 1.5rem;
+}
+
+.control-section h4 {
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary-color);
+    margin-bottom: 0.8rem;
+    opacity: 0.8;
+}
+
+.control-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.8rem;
+}
+
+.control-btn {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.2) 0%, rgba(255, 0, 110, 0.2) 100%);
+    border: 1px solid var(--primary-color);
+    color: var(--text-light);
+    padding: 0.8rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.control-btn:hover {
+    background: var(--primary-color);
+    color: var(--dark-bg);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+.control-btn .icon {
+    font-size: 1.2rem;
+}
+
+/* Settings */
+.setting-item {
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.setting-item label {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.setting-item select,
+.setting-item input[type="range"] {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    padding: 0.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.setting-item select:hover,
+.setting-item input[type="range"]:hover {
+    border-color: var(--primary-color);
+    background: rgba(0, 212, 255, 0.15);
+}
+
+.setting-item input[type="range"] {
+    padding: 0;
+    height: 6px;
+    accent-color: var(--primary-color);
+}
+
+.setting-item input[type="checkbox"] {
+    accent-color: var(--primary-color);
+    cursor: pointer;
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+#volumeLabel {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.keyboard-info {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.keyboard-info p {
+    margin-bottom: 0.5rem;
+}
+
+.keyboard-info strong {
+    color: var(--primary-color);
+}
+
+.gamepad-status {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+    background: rgba(255, 0, 110, 0.1);
+    border-left: 3px solid var(--secondary-color);
+    border-radius: 4px;
+}
+
+.gamepad-status.connected {
+    background: rgba(0, 255, 136, 0.1);
+    border-left-color: var(--success-color);
+    color: var(--success-color);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background: linear-gradient(135deg, var(--dark-bg) 0%, var(--darker-bg) 100%);
+    border: 2px solid var(--primary-color);
+    border-radius: 12px;
+    padding: 2rem;
+    min-width: 300px;
+    box-shadow: 0 8px 32px rgba(0, 212, 255, 0.2);
+}
+
+.modal-content h3 {
+    margin-bottom: 1.5rem;
+    color: var(--primary-color);
+    font-size: 1.3rem;
+}
+
+.modal-input {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+    border-radius: 8px;
+    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    font-family: inherit;
+}
+
+.modal-input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    background: rgba(0, 212, 255, 0.15);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+}
+
+.btn-primary,
+.btn-secondary {
+    padding: 0.8rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-primary {
+    background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+    color: white;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 212, 255, 0.3);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--text-light);
+}
+
+.btn-secondary:hover {
+    border-color: var(--secondary-color);
+    color: var(--secondary-color);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .main-content {
+        grid-template-columns: 1fr;
+        padding: 1.5rem;
+        gap: 1.5rem;
+    }
+
+    .controls-panel {
+        position: fixed;
+        right: -350px;
+        top: 80px;
+        width: 350px;
+        height: calc(100vh - 80px);
+        border-radius: 0;
+        z-index: 99;
+        transition: right 0.3s ease;
+        max-height: none;
+    }
+
+    .controls-panel.open {
+        right: 0;
+    }
+
+    .close-btn {
+        display: block;
+    }
+
+    .menu-toggle {
+        display: block;
+    }
+
+    .game-container {
+        min-height: 400px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .logo {
+        font-size: 1.5rem;
+        letter-spacing: 2px;
+    }
+
+    .tagline {
+        font-size: 0.8rem;
+    }
+
+    .controls-panel {
+        width: 100%;
+        right: -100%;
+    }
+
+    .game-container {
+        min-height: 320px;
+        padding: 0.5rem;
+    }
+
+    .control-buttons {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        min-width: 280px;
+        padding: 1.5rem;
+    }
+}
+
+/* Scrollbar Styling */
+.controls-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.controls-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.controls-panel::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 4px;
+}
+
+.controls-panel::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-color);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.header {
+    animation: fadeIn 0.5s ease;
+}
+
+.game-section {
+    animation: fadeIn 0.5s ease 0.1s both;
+}
+
+.controls-panel {
+    animation: fadeIn 0.5s ease 0.2s both;
+}
