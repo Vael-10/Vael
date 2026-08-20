@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vael - Pokemon Emerald Emulator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">VAEL</h1>
+                <p class="tagline">Pokemon Emerald Emulator</p>
+            </div>
+            <button class="menu-toggle" id="menuToggle">☰</button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Game Display -->
+            <div class="game-section">
+                <div class="game-container">
+                    <div id="emulator"></div>
+                </div>
+                
+                <!-- Game Info -->
+                <div class="game-info">
+                    <h2>Pokemon Emerald Version</h2>
+                    <p class="game-details">Game Boy Advance • 2004</p>
+                </div>
+            </div>
+
+            <!-- Controls Panel -->
+            <aside class="controls-panel" id="controlsPanel">
+                <div class="panel-header">
+                    <h3>Controls</h3>
+                    <button class="close-btn" id="closePanel">✕</button>
+                </div>
+
+                <!-- Game Controls -->
+                <div class="control-section">
+                    <h4>Game</h4>
+                    <div class="control-buttons">
+                        <button class="control-btn" id="playPauseBtn">
+                            <span class="icon">▶</span>
+                            <span>Play</span>
+                        </button>
+                        <button class="control-btn" id="saveBtn">
+                            <span class="icon">💾</span>
+                            <span>Save</span>
+                        </button>
+                        <button class="control-btn" id="loadBtn">
+                            <span class="icon">📂</span>
+                            <span>Load</span>
+                        </button>
+                        <button class="control-btn" id="resetBtn">
+                            <span class="icon">🔄</span>
+                            <span>Reset</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Display Settings -->
+                <div class="control-section">
+                    <h4>Display</h4>
+                    <div class="setting-item">
+                        <label for="scaleSelect">Scale:</label>
+                        <select id="scaleSelect">
+                            <option value="1">1x</option>
+                            <option value="2" selected>2x</option>
+                            <option value="3">3x</option>
+                            <option value="4">4x</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <label for="filterSelect">Filter:</label>
+                        <select id="filterSelect">
+                            <option value="nearest" selected>Sharp (Nearest)</option>
+                            <option value="linear">Smooth (Linear)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Audio Settings -->
+                <div class="control-section">
+                    <h4>Audio</h4>
+                    <div class="setting-item">
+                        <label for="volumeSlider">Volume:</label>
+                        <input type="range" id="volumeSlider" min="0" max="100" value="80">
+                        <span id="volumeLabel">80%</span>
+                    </div>
+                    <div class="setting-item">
+                        <label>
+                            <input type="checkbox" id="muteCheckbox">
+                            Mute
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Keyboard Controls Info -->
+                <div class="control-section">
+                    <h4>Keyboard Controls</h4>
+                    <div class="keyboard-info">
+                        <p><strong>Arrow Keys</strong> - D-Pad</p>
+                        <p><strong>Z</strong> - A Button</p>
+                        <p><strong>X</strong> - B Button</p>
+                        <p><strong>A</strong> - L Button</p>
+                        <p><strong>S</strong> - R Button</p>
+                        <p><strong>Enter</strong> - Start</p>
+                        <p><strong>Shift</strong> - Select</p>
+                    </div>
+                </div>
+
+                <!-- Gamepad Info -->
+                <div class="control-section">
+                    <h4>Gamepad Support</h4>
+                    <p class="gamepad-status" id="gamepadStatus">🔴 No Gamepad Connected</p>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Hidden file input for loading ROMs -->
+        <input type="file" id="romInput" style="display: none;" accept=".gba,.bin,.iso">
+    </div>
+
+    <!-- Modal for saving/loading -->
+    <div class="modal" id="saveModal" style="display: none;">
+        <div class="modal-content">
+            <h3>Save Game</h3>
+            <input type="text" id="saveName" placeholder="Enter save name..." class="modal-input">
+            <div class="modal-buttons">
+                <button class="btn-primary" id="confirmSaveBtn">Save</button>
+                <button class="btn-secondary" id="cancelSaveBtn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Load EmulatorJS -->
+    <script src="https://www.emulatorjs.com/releases/v1.12.5/ejs.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
