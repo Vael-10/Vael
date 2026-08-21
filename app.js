@@ -5,8 +5,8 @@ let isPlaying = false;
 function initializeEmulator() {
     EJS_player = new EJS({
         element: document.getElementById('emulator'),
-        gameUrl: '', // User will load their own ROM
-        biosUrl: '', // Optional BIOS
+        gameUrl: '', // Will be set when user loads ROM
+        biosUrl: '',
         systemId: 'gba',
         data: {},
         title: 'Pokemon Emerald'
@@ -38,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initializeEmulator();
     setupEventListeners();
     monitorGamepad();
+    setupROMLoading();
 });
 
 function setupEventListeners() {
@@ -53,7 +54,7 @@ function setupEventListeners() {
     // Game controls
     playPauseBtn.addEventListener('click', togglePlayPause);
     saveBtn.addEventListener('click', openSaveModal);
-    loadBtn.addEventListener('click', loadGame);
+    loadBtn.addEventListener('click', () => romInput.click());
     resetBtn.addEventListener('click', resetGame);
 
     // Display settings
@@ -85,31 +86,90 @@ function setupEventListeners() {
 
     // Right-click context menu for loading ROM
     document.addEventListener('contextmenu', (e) => {
-        if (e.target.id === 'emulator') {
+        if (e.target.id === 'emulator' || e.target.closest('#emulator')) {
             e.preventDefault();
             romInput.click();
         }
     });
 }
 
+// ROM Loading Setup
+function setupROMLoading() {
+    romInput.addEventListener('change', handleROMLoad);
+}
+
+function handleROMLoad(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    console.log('Loading ROM:', file.name);
+    
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        try {
+            const romData = event.target.result;
+            
+            // Create a blob URL for the ROM
+            const blob = new Blob([romData], { type: 'application/octet-stream' });
+            const romUrl = URL.createObjectURL(blob);
+            
+            // Update the emulator with the new ROM
+            if (EJS_player) {
+                EJS_player.gameUrl = romUrl;
+                EJS_player.run();
+                
+                // Update UI
+                isPlaying = true;
+                playPauseBtn.querySelector('.icon').textContent = '⏸';
+                playPauseBtn.querySelector('span:last-child').textContent = 'Pause';
+                
+                console.log('✅ ROM loaded successfully!');
+                alert('✅ ROM loaded! Use keyboard or gamepad to play.');
+            }
+        } catch (error) {
+            console.error('Error loading ROM:', error);
+            alert('Error loading ROM. Make sure it\'s a valid .gba file');
+        }
+    };
+    
+    reader.onerror = () => {
+        console.error('Error reading file');
+        alert('Error reading file. Please try again.');
+    };
+    
+    reader.readAsArrayBuffer(file);
+    
+    // Reset file input so same file can be loaded again
+    romInput.value = '';
+}
+
 // Play/Pause functionality
 function togglePlayPause() {
+    if (!EJS_player) {
+        alert('Please load a ROM first!');
+        return;
+    }
+
     isPlaying = !isPlaying;
     const icon = playPauseBtn.querySelector('.icon');
     
     if (isPlaying) {
         icon.textContent = '⏸';
         playPauseBtn.querySelector('span:last-child').textContent = 'Pause';
-        EJS_player?.run();
+        if (EJS_player.run) EJS_player.run();
     } else {
         icon.textContent = '▶';
         playPauseBtn.querySelector('span:last-child').textContent = 'Play';
-        EJS_player?.pause();
+        if (EJS_player.pause) EJS_player.pause();
     }
 }
 
 // Save modal
 function openSaveModal() {
+    if (!isPlaying) {
+        alert('No game is running! Load a ROM first.');
+        return;
+    }
     saveModal.style.display = 'flex';
     saveName.focus();
 }
@@ -122,20 +182,25 @@ function closeSaveModal() {
 function saveGame() {
     const name = saveName.value || `Save-${Date.now()}`;
     
-    if (EJS_player) {
-        const saveData = EJS_player.save();
-        localStorage.setItem(`gba-save-${name}`, JSON.stringify(saveData));
-        
-        // Show confirmation
-        const originalText = confirmSaveBtn.textContent;
-        confirmSaveBtn.textContent = '✓ Saved!';
-        confirmSaveBtn.style.background = 'var(--success-color)';
-        
-        setTimeout(() => {
-            confirmSaveBtn.textContent = originalText;
-            confirmSaveBtn.style.background = '';
-            closeSaveModal();
-        }, 1500);
+    if (EJS_player && EJS_player.save) {
+        try {
+            const saveData = EJS_player.save();
+            localStorage.setItem(`gba-save-${name}`, JSON.stringify(saveData));
+            
+            // Show confirmation
+            const originalText = confirmSaveBtn.textContent;
+            confirmSaveBtn.textContent = '✓ Saved!';
+            
+            setTimeout(() => {
+                confirmSaveBtn.textContent = originalText;
+                closeSaveModal();
+            }, 1500);
+        } catch (error) {
+            console.error('Error saving:', error);
+            alert('Could not save game state.');
+        }
+    } else {
+        alert('Save feature not available yet. Start playing first!');
     }
 }
 
@@ -159,9 +224,14 @@ function loadGame() {
     
     if (saveName) {
         const saveData = localStorage.getItem(`gba-save-${saveName}`);
-        if (saveData) {
-            EJS_player?.load(JSON.parse(saveData));
-            alert(`Loaded: ${saveName}`);
+        if (saveData && EJS_player && EJS_player.load) {
+            try {
+                EJS_player.load(JSON.parse(saveData));
+                alert(`Loaded: ${saveName}`);
+            } catch (error) {
+                console.error('Error loading save:', error);
+                alert('Could not load save state.');
+            }
         } else {
             alert('Save not found!');
         }
@@ -169,8 +239,15 @@ function loadGame() {
 }
 
 function resetGame() {
+    if (!isPlaying) {
+        alert('No game is running!');
+        return;
+    }
+    
     if (confirm('Are you sure you want to reset the game?')) {
-        EJS_player?.reset();
+        if (EJS_player && EJS_player.reset) {
+            EJS_player.reset();
+        }
         isPlaying = true;
         playPauseBtn.querySelector('.icon').textContent = '⏸';
         playPauseBtn.querySelector('span:last-child').textContent = 'Pause';
@@ -200,12 +277,12 @@ function updateVolume(value) {
 
 function toggleMute() {
     if (muteCheckbox.checked) {
-        if (EJS_player) {
+        if (EJS_player && EJS_player.mute) {
             EJS_player.mute();
         }
         volumeSlider.disabled = true;
     } else {
-        if (EJS_player) {
+        if (EJS_player && EJS_player.unmute) {
             EJS_player.unmute();
         }
         volumeSlider.disabled = false;
@@ -239,24 +316,6 @@ function updateGamepadStatus(connected) {
     }
 }
 
-// ROM loading
-romInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = (event) => {
-            if (EJS_player) {
-                EJS_player.gameUrl = event.target.result;
-                EJS_player.run();
-                isPlaying = true;
-                playPauseBtn.querySelector('.icon').textContent = '⏸';
-                playPauseBtn.querySelector('span:last-child').textContent = 'Pause';
-            }
-        };
-        reader.readAsArrayBuffer(file);
-    }
-});
-
 // Keyboard controls mapping
 document.addEventListener('keydown', (e) => {
     if (!EJS_player) return;
@@ -286,4 +345,4 @@ document.addEventListener('click', (e) => {
     }
 });
 
-console.log('🎮 Vael Emulator loaded and ready!');
+console.log('🎮 Vael Emulator loaded and ready! Right-click the game area or click Load to select your ROM.');
